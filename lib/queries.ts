@@ -3,6 +3,7 @@ import type {
   Drink,
   Bean,
   SyrupOption,
+  SweetnessConfig,
   Order,
   OrderFormData,
   OrderStatus,
@@ -113,6 +114,23 @@ export function updateSyrup(id: string, data: { name?: string; is_active?: numbe
   const setClauses = entries.map(([k]) => `${k} = ?`).join(', ');
   const values = entries.map(([, v]) => v);
   db.prepare(`UPDATE syrups SET ${setClauses} WHERE id = ?`).run(...values, id);
+}
+
+// ---------------------------------------------------------------------------
+// Sweetness config
+// ---------------------------------------------------------------------------
+
+const SWEETNESS_ORDER = ['none', 'light', 'default', 'extra'];
+
+export function getSweetnessConfigs(): SweetnessConfig[] {
+  const db = getDb();
+  const rows = db.prepare('SELECT * FROM sweetness_config').all() as SweetnessConfig[];
+  return rows.sort((a, b) => SWEETNESS_ORDER.indexOf(a.value) - SWEETNESS_ORDER.indexOf(b.value));
+}
+
+export function updateSweetnessConfig(value: string, subtitle: string): void {
+  const db = getDb();
+  db.prepare('UPDATE sweetness_config SET subtitle = ? WHERE value = ?').run(subtitle, value);
 }
 
 // ---------------------------------------------------------------------------

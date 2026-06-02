@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import type { Drink, SyrupOption, Temp, Syrup, Sweetness, Milk, Caffeine } from '@/lib/types';
+import type { Drink, SyrupOption, SweetnessConfig, Temp, Syrup, Sweetness, Milk, Caffeine } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -255,6 +255,84 @@ function SyrupsSection() {
 }
 
 // ---------------------------------------------------------------------------
+// Sweetness config section
+// ---------------------------------------------------------------------------
+
+const SWEETNESS_LABELS: Record<string, string> = {
+  none: 'None',
+  light: 'Light',
+  default: 'Default',
+  extra: 'Extra',
+};
+
+function SweetnessConfigSection() {
+  const [configs, setConfigs] = useState<SweetnessConfig[]>([]);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [isDirty, setIsDirty] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/sweetness-config')
+      .then((r) => r.json())
+      .then((data: SweetnessConfig[]) => {
+        setConfigs(data);
+        const initial: Record<string, string> = {};
+        data.forEach((c) => { initial[c.value] = c.subtitle; });
+        setDrafts(initial);
+        setLoading(false);
+      });
+  }, []);
+
+  function handleChange(value: string, subtitle: string) {
+    setDrafts((prev) => ({ ...prev, [value]: subtitle }));
+    setIsDirty(true);
+  }
+
+  async function handleSave() {
+    await Promise.all(
+      configs.map((c) =>
+        fetch(`/api/sweetness-config/${c.value}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subtitle: drafts[c.value] ?? '' }),
+        })
+      )
+    );
+    setIsDirty(false);
+  }
+
+  if (loading) return <p className="text-latte text-sm">Loading...</p>;
+
+  return (
+    <div className="space-y-3">
+      {configs.map((c) => (
+        <div key={c.value} className="flex items-center gap-3">
+          <span className="text-sm font-medium text-espresso w-16 flex-shrink-0">
+            {SWEETNESS_LABELS[c.value] ?? c.value}
+          </span>
+          <input
+            type="text"
+            value={drafts[c.value] ?? ''}
+            onChange={(e) => handleChange(c.value, e.target.value)}
+            placeholder={c.value === 'none' ? 'No description' : 'e.g. 1 tsp / 5 mL'}
+            className="flex-1 rounded-lg border border-cream bg-foam text-espresso text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-caramel"
+          />
+        </div>
+      ))}
+      <div className="flex justify-end mt-2">
+        <button
+          onClick={handleSave}
+          disabled={!isDirty}
+          className="px-4 py-2 rounded-lg text-sm font-medium bg-coffee text-cream hover:bg-espresso disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
@@ -350,6 +428,17 @@ export default function AdminPage() {
             Syrup Options
           </h2>
           <SyrupsSection />
+        </section>
+
+        {/* Sweetness config section */}
+        <section>
+          <h2 className="text-xl font-bold text-espresso mb-1 pb-2 border-b-2 border-cream">
+            Sweetness Descriptions
+          </h2>
+          <p className="text-xs text-latte mb-4">
+            Short labels shown on the order form under each sweetness level.
+          </p>
+          <SweetnessConfigSection />
         </section>
       </main>
     </div>

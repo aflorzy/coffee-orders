@@ -36,6 +36,11 @@ export interface SyrupOption {
   is_active: number;
 }
 
+export interface SweetnessConfig {
+  value: Sweetness;
+  subtitle: string;
+}
+
 export interface Order {
   id: string;
   customer_name: string;

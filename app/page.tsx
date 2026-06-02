@@ -5,6 +5,7 @@ import DrinkCard from '@/components/DrinkCard';
 import PillToggle from '@/components/PillToggle';
 import type {
   Drink,
+  SweetnessConfig,
   Temp,
   Syrup,
   Sweetness,
@@ -92,6 +93,7 @@ export default function OrderPage() {
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [aerocanoTipOpen, setAerocanoTipOpen] = useState(false);
+  const [sweetnessSubtitles, setSweetnessSubtitles] = useState<Record<string, string>>({});
   const aerocanoTipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -122,6 +124,17 @@ export default function OrderPage() {
       .catch(() => {
         // Silently fall back to hardcoded defaults
       });
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/sweetness-config')
+      .then((res) => res.json())
+      .then((data: SweetnessConfig[]) => {
+        const map: Record<string, string> = {};
+        data.forEach((c) => { map[c.value] = c.subtitle; });
+        setSweetnessSubtitles(map);
+      })
+      .catch(() => {});
   }, []);
 
   function handleDrinkSelect(drink: Drink) {
@@ -368,6 +381,9 @@ export default function OrderPage() {
                   value={sweetness}
                   onChange={(v) => setSweetness(v as Sweetness)}
                 />
+                {sweetnessSubtitles[sweetness] && (
+                  <p className="text-xs text-latte mt-1.5">{sweetnessSubtitles[sweetness]}</p>
+                )}
               </div>
 
               <div>
