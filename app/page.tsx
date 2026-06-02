@@ -282,6 +282,7 @@ export default function OrderPage() {
                   <button
                     key={opt.value}
                     type="button"
+                    aria-pressed={temp === opt.value}
                     onClick={() => setTemp(opt.value as Temp)}
                     className={`
                       px-5 py-2.5 rounded-full text-sm font-semibold border-2 transition-all duration-150
@@ -311,11 +312,11 @@ export default function OrderPage() {
                       aria-label="What is Aerocano?"
                       aria-expanded={aerocanoTipOpen}
                       onClick={() => setAerocanoTipOpen((v) => !v)}
-                      className="w-4 h-4 rounded-full bg-cream text-coffee text-xs font-bold flex items-center justify-center cursor-help select-none border border-latte/30"
+                      className="p-2 -m-2 w-4 h-4 rounded-full bg-cream text-coffee text-xs font-bold flex items-center justify-center cursor-help select-none border border-latte/30"
                     >
                       ?
                     </button>
-                    <div className={`absolute bottom-full left-0 mb-2 w-64 bg-espresso text-foam text-xs rounded-xl px-3 py-2.5 z-20 shadow-lg leading-relaxed pointer-events-none group-hover:block ${aerocanoTipOpen ? 'block' : 'hidden'}`}>
+                    <div className={`absolute bottom-full left-0 mb-2 w-64 bg-espresso text-foam text-xs rounded-xl px-3 py-2.5 z-20 shadow-lg leading-relaxed pointer-events-none ${aerocanoTipOpen ? 'block' : 'hidden'}`}>
                       {AEROCANO_TOOLTIP}
                       <div className="absolute top-full left-2 border-4 border-transparent border-t-espresso" />
                     </div>
@@ -326,6 +327,7 @@ export default function OrderPage() {
                     <button
                       key={s}
                       type="button"
+                      aria-pressed={style === s}
                       onClick={() => setStyle(s)}
                       className={`
                         px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all duration-150
@@ -413,7 +415,7 @@ export default function OrderPage() {
 
         {/* Error */}
         {submitState === 'error' && (
-          <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <p role="alert" className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
             {errorMessage}
           </p>
         )}

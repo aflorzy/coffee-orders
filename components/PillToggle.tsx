@@ -26,6 +26,7 @@ export default function PillToggle({
           <button
             key={option.value}
             type="button"
+            aria-pressed={isSelected}
             onClick={() => onChange(option.value)}
             className={`
               px-4 py-2 rounded-full text-sm font-medium border transition-all duration-150

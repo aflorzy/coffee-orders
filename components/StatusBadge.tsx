@@ -10,15 +10,15 @@ const STATUS_CONFIG: Record<
 > = {
   pending: {
     label: 'Pending',
-    className: 'bg-caramel/20 text-caramel border border-caramel/30',
+    className: 'bg-caramel/15 text-coffee ring-1 ring-inset ring-caramel/30',
   },
   'in-progress': {
     label: 'In Progress',
-    className: 'bg-blue-100 text-blue-700 border border-blue-200',
+    className: 'bg-blue-100 text-blue-700 ring-1 ring-inset ring-blue-200',
   },
   done: {
     label: 'Done ✓',
-    className: 'bg-green-100 text-green-700 border border-green-200',
+    className: 'bg-green-100 text-green-700 ring-1 ring-inset ring-green-200',
   },
 };
 

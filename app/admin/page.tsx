@@ -304,17 +304,17 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-foam">
       {/* Nav header */}
-      <header className="bg-espresso text-cream px-6 py-4 flex items-center justify-between shadow-md">
+      <header className="bg-espresso text-cream px-4 py-4 flex items-center justify-between shadow-md">
         <Link
           href="/orders"
-          className="text-sm font-medium text-latte hover:text-cream transition-colors"
+          className="text-sm font-medium text-latte hover:text-cream transition-colors flex-shrink-0"
         >
           &larr; Back to orders
         </Link>
-        <h1 className="text-lg font-bold tracking-wide">Admin Config</h1>
+        <h1 className="text-lg font-bold tracking-wide truncate">Admin Config</h1>
         <Link
           href="/admin/beans"
-          className="text-sm font-medium text-latte hover:text-cream transition-colors"
+          className="text-sm font-medium text-latte hover:text-cream transition-colors flex-shrink-0"
         >
           Beans &rarr;
         </Link>

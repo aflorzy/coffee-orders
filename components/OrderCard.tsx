@@ -82,7 +82,7 @@ export default function OrderCard({ order, onStatusChange, onDelete }: OrderCard
       `}
     >
       <div className="flex items-start justify-between gap-3 mb-2">
-        <div>
+        <div className="min-w-0">
           <p className="text-espresso font-bold text-lg leading-tight">
             {order.customer_name}
           </p>
@@ -93,7 +93,8 @@ export default function OrderCard({ order, onStatusChange, onDelete }: OrderCard
         {onStatusChange ? (
           <button
             onClick={() => onStatusChange(order.id, STATUS_CYCLE[order.status])}
-            className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber/40 rounded-full"
+            aria-label={`Mark as ${STATUS_CYCLE[order.status]}`}
+            className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-caramel/40 rounded-full"
             title={`Mark as ${STATUS_CYCLE[order.status]}`}
           >
             <StatusBadge status={order.status} />
@@ -127,7 +128,8 @@ export default function OrderCard({ order, onStatusChange, onDelete }: OrderCard
         {onDelete && (
           <button
             onClick={() => window.confirm('Delete this order?') && onDelete(order.id)}
-            className="text-roast/30 hover:text-red-400 transition-colors p-0.5 rounded focus:outline-none focus:ring-2 focus:ring-red-300"
+            aria-label="Delete order"
+            className="text-roast/30 hover:text-red-400 transition-colors -m-2 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-300"
             title="Delete order"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">

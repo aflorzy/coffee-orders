@@ -97,8 +97,8 @@ export default function OrdersPage() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Header row */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-espresso">Orders Board</h1>
-        <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-espresso min-w-0">Orders Board</h1>
+        <div className="flex items-center gap-3 flex-shrink-0">
           {lastUpdated && (
             <span className="text-xs text-latte">
               Updated {timeAgoShort(lastUpdated)}
@@ -128,7 +128,7 @@ export default function OrdersPage() {
       {/* Error state */}
       {!loading && error && (
         <div className="text-center py-16">
-          <p className="text-roast/60 mb-4">{error}</p>
+          <p role="alert" className="text-roast/60 mb-4">{error}</p>
           <button
             onClick={fetchOrders}
             className="px-5 py-2.5 rounded-full bg-espresso text-foam text-sm font-semibold hover:bg-coffee transition-colors"

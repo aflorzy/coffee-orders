@@ -16,6 +16,7 @@ export default function DrinkCard({
   return (
     <button
       type="button"
+      aria-pressed={isSelected}
       onClick={onClick}
       className={`
         w-full rounded-2xl p-5 text-left border-2 transition-all duration-200 cursor-pointer
