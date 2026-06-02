@@ -92,9 +92,9 @@ export default function OrderCard({ order, onStatusChange, onDelete }: OrderCard
         </div>
         {onStatusChange ? (
           <button
-            onClick={() => onStatusChange(order.id, STATUS_CYCLE[order.status])}
+            onClick={(e) => { onStatusChange(order.id, STATUS_CYCLE[order.status]); (e.currentTarget as HTMLButtonElement).blur(); }}
             aria-label={`Mark as ${STATUS_CYCLE[order.status]}`}
-            className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-caramel/40 rounded-full"
+            className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-caramel/40 rounded-full"
             title={`Mark as ${STATUS_CYCLE[order.status]}`}
           >
             <StatusBadge status={order.status} />
@@ -127,9 +127,9 @@ export default function OrderCard({ order, onStatusChange, onDelete }: OrderCard
         <p className="text-xs text-latte">{relativeTime(order.created_at)}</p>
         {onDelete && (
           <button
-            onClick={() => window.confirm('Delete this order?') && onDelete(order.id)}
+            onClick={(e) => { if (window.confirm('Delete this order?')) { onDelete(order.id); } else { (e.currentTarget as HTMLButtonElement).blur(); } }}
             aria-label="Delete order"
-            className="text-roast/30 hover:text-red-400 transition-colors -m-2 p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-300"
+            className="text-roast/30 hover:text-red-400 transition-colors -m-2 p-2 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
             title="Delete order"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
