@@ -94,10 +94,10 @@ function DrinkCard({
           onChange={(v) => onChange('default_temp', v)}
         />
         <SelectField
-          label="Syrup"
-          value={draft.default_syrup}
-          options={SYRUP_OPTIONS}
-          onChange={(v) => onChange('default_syrup', v)}
+          label="Caffeine"
+          value={draft.default_caffeine}
+          options={CAFFEINE_OPTIONS}
+          onChange={(v) => onChange('default_caffeine', v)}
         />
         <SelectField
           label="Sweetness"
@@ -106,16 +106,16 @@ function DrinkCard({
           onChange={(v) => onChange('default_sweetness', v)}
         />
         <SelectField
+          label="Syrup"
+          value={draft.default_syrup}
+          options={SYRUP_OPTIONS}
+          onChange={(v) => onChange('default_syrup', v)}
+        />
+        <SelectField
           label="Milk"
           value={draft.default_milk}
           options={MILK_OPTIONS}
           onChange={(v) => onChange('default_milk', v)}
-        />
-        <SelectField
-          label="Caffeine"
-          value={draft.default_caffeine}
-          options={CAFFEINE_OPTIONS}
-          onChange={(v) => onChange('default_caffeine', v)}
         />
       </div>
 
