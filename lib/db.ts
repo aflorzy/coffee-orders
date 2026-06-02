@@ -62,7 +62,28 @@ function initSchema(db: Database.Database) {
     );
   `);
 
+  migrate(db);
   seed(db);
+}
+
+function migrate(db: Database.Database) {
+  // Add style column to orders if it doesn't exist yet
+  const cols = db.pragma('table_info(orders)') as Array<{ name: string }>;
+  if (!cols.find((c) => c.name === 'style')) {
+    db.exec(`ALTER TABLE orders ADD COLUMN style TEXT DEFAULT 'regular'`);
+  }
+
+  // Aerocano is now an Americano style option, not a standalone drink.
+  // Migrate any existing aerocano orders to americano + style='aerocano' before removing the drink row.
+  const aerocano = db
+    .prepare("SELECT COUNT(*) as count FROM drinks WHERE id = 'aerocano'")
+    .get() as { count: number };
+  if (aerocano.count > 0) {
+    db.prepare(
+      "UPDATE orders SET drink_id = 'americano', style = 'aerocano' WHERE drink_id = 'aerocano'"
+    ).run();
+    db.prepare("DELETE FROM drinks WHERE id = 'aerocano'").run();
+  }
 }
 
 function seed(db: Database.Database) {
@@ -73,7 +94,6 @@ function seed(db: Database.Database) {
     );
     ins.run('latte', 'Latte', 'iced', 'vanilla', 'light', 'oat', 'full-caf');
     ins.run('americano', 'Americano', 'hot', 'none', 'none', 'none', 'full-caf');
-    ins.run('aerocano', 'Aerocano', 'hot', 'none', 'none', 'none', 'full-caf');
   }
 
   const syrupCount = (db.prepare('SELECT COUNT(*) as count FROM syrups').get() as { count: number }).count;

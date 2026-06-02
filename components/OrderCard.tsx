@@ -30,6 +30,9 @@ interface CustomizationChip {
 function buildChips(order: Order): CustomizationChip[] {
   const chips: CustomizationChip[] = [];
 
+  if (order.style === 'aerocano') {
+    chips.push({ label: 'Aerocano ☁' });
+  }
   if (order.syrup !== 'none') {
     chips.push({ label: capitalize(order.syrup) });
   }

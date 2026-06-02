@@ -10,6 +10,7 @@ import type {
   Sweetness,
   Milk,
   Caffeine,
+  DrinkStyle,
   OrderFormData,
 } from '@/lib/types';
 
@@ -35,23 +36,15 @@ const FALLBACK_DRINKS: Drink[] = [
     default_milk: 'none',
     default_caffeine: 'full-caf',
   },
-  {
-    id: 'aerocano',
-    name: 'Aerocano',
-    is_active: 1,
-    default_temp: 'hot',
-    default_syrup: 'none',
-    default_sweetness: 'none',
-    default_milk: 'none',
-    default_caffeine: 'full-caf',
-  },
 ];
 
 const DRINK_DESCRIPTIONS: Record<string, string> = {
-  latte: 'Espresso + milk',
+  latte: 'Espresso + steamed milk',
   americano: 'Espresso + water',
-  aerocano: 'Aeropress style',
 };
+
+const AEROCANO_TOOLTIP =
+  'Steamed americano — espresso is poured over ice and water in a frothing jug, then steamed until the ice melts. Silky texture, bold coffee flavor, served warm (not hot).';
 
 const TEMP_OPTIONS = [
   { value: 'hot', label: '☕ Hot' },
@@ -94,6 +87,7 @@ export default function OrderPage() {
   const [sweetness, setSweetness] = useState<Sweetness>('none');
   const [milk, setMilk] = useState<Milk>('none');
   const [caffeine, setCaffeine] = useState<Caffeine>('full-caf');
+  const [style, setStyle] = useState<DrinkStyle>('regular');
   const [notes, setNotes] = useState('');
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -124,6 +118,7 @@ export default function OrderPage() {
     setSweetness(drink.default_sweetness);
     setMilk(drink.default_milk);
     setCaffeine(drink.default_caffeine);
+    setStyle('regular');
   }
 
   function resetForm() {
@@ -134,6 +129,7 @@ export default function OrderPage() {
     setSweetness('none');
     setMilk('none');
     setCaffeine('full-caf');
+    setStyle('regular');
     setNotes('');
     setSubmitState('idle');
     setErrorMessage('');
@@ -155,6 +151,7 @@ export default function OrderPage() {
       sweetness,
       milk,
       caffeine,
+      style: selectedDrinkId === 'americano' ? style : 'regular',
       special_notes: notes.trim() || undefined,
     };
 
@@ -285,6 +282,44 @@ export default function OrderPage() {
                 ))}
               </div>
             </section>
+
+            {/* Aerocano style toggle — Americano only */}
+            {selectedDrinkId === 'americano' && (
+              <section>
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="text-roast text-sm font-semibold uppercase tracking-wide">
+                    Style
+                  </p>
+                  <div className="group relative">
+                    <span className="w-4 h-4 rounded-full bg-cream text-coffee text-xs font-bold flex items-center justify-center cursor-help select-none border border-latte/30">
+                      ?
+                    </span>
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-espresso text-foam text-xs rounded-xl px-3 py-2.5 hidden group-hover:block pointer-events-none z-20 shadow-lg leading-relaxed">
+                      {AEROCANO_TOOLTIP}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-espresso" />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {(['regular', 'aerocano'] as DrinkStyle[]).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setStyle(s)}
+                      className={`
+                        px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all duration-150
+                        ${style === s
+                          ? 'bg-espresso text-foam border-espresso scale-105 shadow-md shadow-espresso/20'
+                          : 'bg-cream text-coffee border-cream hover:border-latte/40'
+                        }
+                      `}
+                    >
+                      {s === 'regular' ? 'Regular' : 'Aerocano ☁'}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Modifications */}
             <section className="flex flex-col gap-4">

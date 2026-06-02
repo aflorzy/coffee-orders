@@ -149,8 +149,8 @@ export function createOrder(data: OrderFormData): string {
   const db = getDb();
   const id = crypto.randomUUID();
   db.prepare(
-    `INSERT INTO orders (id, customer_name, drink_id, temp, syrup, sweetness, milk, caffeine, special_notes, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`
+    `INSERT INTO orders (id, customer_name, drink_id, temp, syrup, sweetness, milk, caffeine, style, special_notes, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`
   ).run(
     id,
     data.customer_name,
@@ -160,6 +160,7 @@ export function createOrder(data: OrderFormData): string {
     data.sweetness,
     data.milk,
     data.caffeine,
+    data.style ?? 'regular',
     data.special_notes ?? null
   );
   return id;

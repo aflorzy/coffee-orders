@@ -3,6 +3,7 @@ export type Syrup = 'none' | 'vanilla' | 'almond';
 export type Sweetness = 'none' | 'light' | 'default' | 'extra';
 export type Milk = 'none' | 'whole' | 'oat';
 export type Caffeine = 'decaf' | 'half-caf' | 'full-caf';
+export type DrinkStyle = 'regular' | 'aerocano';
 export type OrderStatus = 'pending' | 'in-progress' | 'done';
 export type RoastLevel = 'light' | 'medium' | 'medium-dark' | 'dark';
 
@@ -47,6 +48,7 @@ export interface Order {
   sweetness: Sweetness;
   milk: Milk;
   caffeine: Caffeine;
+  style: DrinkStyle;
   special_notes: string | null;
   status: OrderStatus;
   created_at: string;
@@ -60,5 +62,6 @@ export interface OrderFormData {
   sweetness: Sweetness;
   milk: Milk;
   caffeine: Caffeine;
+  style?: DrinkStyle;
   special_notes?: string;
 }
