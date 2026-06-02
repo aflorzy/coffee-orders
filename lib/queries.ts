@@ -49,7 +49,7 @@ export function updateDrinkDefaults(
 
 export function getBeans(): Bean[] {
   const db = getDb();
-  return db.prepare('SELECT * FROM beans WHERE is_active = 1 ORDER BY created_at DESC').all() as Bean[];
+  return db.prepare('SELECT * FROM beans ORDER BY is_active DESC, created_at DESC').all() as Bean[];
 }
 
 export function getBean(id: string): Bean | undefined {
