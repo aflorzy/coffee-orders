@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { Order } from '@/lib/types';
+import type { Order, OrderStatus } from '@/lib/types';
 import OrderCard from '@/components/OrderCard';
 
 function timeAgoShort(date: Date): string {
@@ -63,6 +63,33 @@ export default function OrdersPage() {
     const interval = setInterval(() => setTick((t) => t + 1), 10_000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleStatusChange = useCallback(async (id: string, status: OrderStatus) => {
+    setOrders((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, status } : o))
+    );
+    try {
+      const res = await fetch(`/api/orders/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error('Failed');
+    } catch {
+      // Roll back on failure
+      fetchOrders();
+    }
+  }, [fetchOrders]);
+
+  const handleDelete = useCallback(async (id: string) => {
+    setOrders((prev) => prev.filter((o) => o.id !== id));
+    try {
+      const res = await fetch(`/api/orders/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed');
+    } catch {
+      fetchOrders();
+    }
+  }, [fetchOrders]);
 
   const sorted = sortOrders(orders);
 
@@ -130,7 +157,7 @@ export default function OrdersPage() {
       {!loading && !error && sorted.length > 0 && (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {sorted.map((order) => (
-            <OrderCard key={order.id} order={order} />
+            <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} onDelete={handleDelete} />
           ))}
         </div>
       )}

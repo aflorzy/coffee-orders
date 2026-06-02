@@ -170,3 +170,8 @@ export function updateOrderStatus(id: string, status: OrderStatus): void {
   const db = getDb();
   db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(status, id);
 }
+
+export function deleteOrder(id: string): void {
+  const db = getDb();
+  db.prepare('DELETE FROM orders WHERE id = ?').run(id);
+}

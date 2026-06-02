@@ -91,6 +91,19 @@ export default function OrderPage() {
   const [notes, setNotes] = useState('');
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [aerocanoTipOpen, setAerocanoTipOpen] = useState(false);
+  const aerocanoTipRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!aerocanoTipOpen) return;
+    function handleOutside(e: PointerEvent) {
+      if (aerocanoTipRef.current && !aerocanoTipRef.current.contains(e.target as Node)) {
+        setAerocanoTipOpen(false);
+      }
+    }
+    document.addEventListener('pointerdown', handleOutside);
+    return () => document.removeEventListener('pointerdown', handleOutside);
+  }, [aerocanoTipOpen]);
 
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -119,6 +132,7 @@ export default function OrderPage() {
     setMilk(drink.default_milk);
     setCaffeine(drink.default_caffeine);
     setStyle('regular');
+    setAerocanoTipOpen(false);
   }
 
   function resetForm() {
@@ -133,6 +147,7 @@ export default function OrderPage() {
     setNotes('');
     setSubmitState('idle');
     setErrorMessage('');
+    setAerocanoTipOpen(false);
     setTimeout(() => nameInputRef.current?.focus(), 50);
   }
 
@@ -290,13 +305,19 @@ export default function OrderPage() {
                   <p className="text-roast text-sm font-semibold uppercase tracking-wide">
                     Style
                   </p>
-                  <div className="group relative">
-                    <span className="w-4 h-4 rounded-full bg-cream text-coffee text-xs font-bold flex items-center justify-center cursor-help select-none border border-latte/30">
+                  <div ref={aerocanoTipRef} className="group relative">
+                    <button
+                      type="button"
+                      aria-label="What is Aerocano?"
+                      aria-expanded={aerocanoTipOpen}
+                      onClick={() => setAerocanoTipOpen((v) => !v)}
+                      className="w-4 h-4 rounded-full bg-cream text-coffee text-xs font-bold flex items-center justify-center cursor-help select-none border border-latte/30"
+                    >
                       ?
-                    </span>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-espresso text-foam text-xs rounded-xl px-3 py-2.5 hidden group-hover:block pointer-events-none z-20 shadow-lg leading-relaxed">
+                    </button>
+                    <div className={`absolute bottom-full left-0 mb-2 w-64 bg-espresso text-foam text-xs rounded-xl px-3 py-2.5 z-20 shadow-lg leading-relaxed pointer-events-none group-hover:block ${aerocanoTipOpen ? 'block' : 'hidden'}`}>
                       {AEROCANO_TOOLTIP}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-espresso" />
+                      <div className="absolute top-full left-2 border-4 border-transparent border-t-espresso" />
                     </div>
                   </div>
                 </div>
@@ -327,12 +348,12 @@ export default function OrderPage() {
 
               <div>
                 <p className="text-roast text-sm font-semibold mb-2 uppercase tracking-wide">
-                  Syrup
+                  Caffeine
                 </p>
                 <PillToggle
-                  options={SYRUP_OPTIONS}
-                  value={syrup}
-                  onChange={(v) => setSyrup(v as Syrup)}
+                  options={CAFFEINE_OPTIONS}
+                  value={caffeine}
+                  onChange={(v) => setCaffeine(v as Caffeine)}
                 />
               </div>
 
@@ -349,23 +370,23 @@ export default function OrderPage() {
 
               <div>
                 <p className="text-roast text-sm font-semibold mb-2 uppercase tracking-wide">
+                  Syrup
+                </p>
+                <PillToggle
+                  options={SYRUP_OPTIONS}
+                  value={syrup}
+                  onChange={(v) => setSyrup(v as Syrup)}
+                />
+              </div>
+
+              <div>
+                <p className="text-roast text-sm font-semibold mb-2 uppercase tracking-wide">
                   Milk
                 </p>
                 <PillToggle
                   options={MILK_OPTIONS}
                   value={milk}
                   onChange={(v) => setMilk(v as Milk)}
-                />
-              </div>
-
-              <div>
-                <p className="text-roast text-sm font-semibold mb-2 uppercase tracking-wide">
-                  Caffeine
-                </p>
-                <PillToggle
-                  options={CAFFEINE_OPTIONS}
-                  value={caffeine}
-                  onChange={(v) => setCaffeine(v as Caffeine)}
                 />
               </div>
             </section>
