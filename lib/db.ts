@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const DB_PATH = path.join(process.cwd(), 'coffee-orders.db');
+const DB_PATH = process.env.DB_PATH ?? path.join(process.cwd(), 'coffee-orders.db');
 
 let _db: Database.Database | null = null;
 
@@ -44,6 +44,11 @@ function initSchema(db: Database.Database) {
       default_sweetness TEXT DEFAULT 'light',
       default_milk TEXT DEFAULT 'oat',
       default_caffeine TEXT DEFAULT 'full-caf'
+    );
+
+    CREATE TABLE IF NOT EXISTS sweetness_config (
+      value TEXT PRIMARY KEY,
+      subtitle TEXT NOT NULL DEFAULT ''
     );
 
     CREATE TABLE IF NOT EXISTS orders (
@@ -101,5 +106,14 @@ function seed(db: Database.Database) {
     const ins = db.prepare('INSERT INTO syrups (id, name) VALUES (?, ?)');
     ins.run('vanilla', 'Vanilla');
     ins.run('almond', 'Almond');
+  }
+
+  const sweetnessConfigCount = (db.prepare('SELECT COUNT(*) as count FROM sweetness_config').get() as { count: number }).count;
+  if (sweetnessConfigCount === 0) {
+    const ins = db.prepare('INSERT INTO sweetness_config (value, subtitle) VALUES (?, ?)');
+    ins.run('none', '');
+    ins.run('light', '1 tsp / 5 mL');
+    ins.run('default', '2 tsp / 10 mL');
+    ins.run('extra', '1 Tbsp / 15 mL');
   }
 }
